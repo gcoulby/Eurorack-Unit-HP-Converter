@@ -36,3 +36,20 @@
     transform: rotate(360deg);
   }
 }
+
+.social ul {
+  list-style: none;
+}
+
+.social ul li {
+  display: inline;
+  margin-left: 1em;
+}
+
+.social ul li svg {
+  height: 20px !important;
+}
+
+.social ul li svg path {
+  fill: white;
+}
