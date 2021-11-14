@@ -1,9 +1,11 @@
 import React, { Component } from "react";
-import { Form, Tabs, Tab, Container, Row, Col, Alert } from "react-bootstrap";
+import { Form, Tabs, Tab, Container, Row, Col, Alert, Card } from "react-bootstrap";
 
 const HP_W = 5.08;
 const U_H = 44.45;
 const HP_OFFSET = 0.34;
+const DOEPFER_U_OFFSET = 4.85;
+const PCB_H_OFFSET = 18.5;
 
 class Converter extends Component {
   state = {
@@ -16,6 +18,7 @@ class Converter extends Component {
     u_mm: 133.35,
     u_in: 5.25,
     showInches: false,
+    wholeHeight: false,
   };
 
   setHpMeasurements = (hp, mm) => {
@@ -39,13 +42,36 @@ class Converter extends Component {
   getPcbWidth = () => {
     if (this.state.hp === 0) return 0;
     else {
-      var val = this.state.showInches ? (this.state.hp_mm_avg - 0.1) / 24.5 : this.state.hp_mm_avg - 0.1;
+      var val = this.state.showInches ? (this.state.hp_mm_avg - 0.1) / 25.4 : this.state.hp_mm_avg - 0.1;
+      return val.toFixed(2);
+    }
+  };
+
+  getPcbHeight = () => {
+    if (this.state.u === 0) return 0;
+    else {
+      var val = this.state.showInches
+        ? (this.state.u_mm - DOEPFER_U_OFFSET - PCB_H_OFFSET) / 25.4
+        : this.state.u_mm - DOEPFER_U_OFFSET - PCB_H_OFFSET;
+      return val.toFixed(2);
+    }
+  };
+
+  getPanelHeight = (offset = 0) => {
+    const u = this.state.wholeHeight ? this.state.u_mm - offset : this.state.u_mm - DOEPFER_U_OFFSET - offset;
+    if (this.state.u === 0) return 0;
+    else {
+      var val = this.state.showInches ? u / 25.4 : u;
       return val.toFixed(2);
     }
   };
 
   handleOnShowInchesChanged = () => {
     this.setState({ showInches: !this.state.showInches });
+  };
+
+  handleOnWholeHeightChanged = () => {
+    this.setState({ wholeHeight: !this.state.wholeHeight });
   };
 
   handleOnHpChange = (evt) => {
@@ -69,9 +95,11 @@ class Converter extends Component {
   };
 
   handleOnUChange = (evt) => {
-    this.setState({ u: evt.target.value });
-    const u_mm = (evt.target.value * U_H).toFixed(2);
-    const u_in = ((evt.target.value * U_H) / 25.4).toFixed(2);
+    const u = evt.target.value > 0 ? evt.target.value : 0;
+    this.setState({ u });
+
+    const u_mm = (u * U_H).toFixed(2);
+    const u_in = ((u * U_H) / 25.4).toFixed(2);
     this.setState({ u_mm });
     this.setState({ u_in });
   };
@@ -179,250 +207,247 @@ class Converter extends Component {
               </a>
             </p>
           </Alert>
-          <Tabs defaultActiveKey="HP" id="uncontrolled-tab-example" className="mb-3">
-            <Tab eventKey="HP" title="HP">
-              <div className="mt-4 mb-2" style={{ width: "270px" }}>
-                <label className="switch">
-                  <input
-                    id="inch-toggle"
-                    type="checkbox"
-                    checked={this.state.showInches}
-                    onChange={(e) => this.handleOnShowInchesChanged(e)}
-                  />
-                  <span className="slider round"></span>
-                </label>
-                <label htmlFor="inch-toggle">&nbsp;Show Measurements in Inches</label>
-              </div>
-              <Form>
-                <Form.Group className="mb-3" controlId="formHp">
-                  <Form.Label>Horizontal Pitch</Form.Label>
-                  <Form.Control
-                    type="number"
-                    placeholder=""
-                    min="0"
-                    value={this.state.hp}
-                    onChange={(e) => this.handleOnHpChange(e)}
-                  />
-                  <Form.Text className="text-muted">The number of Horizontal Pitch Units</Form.Text>
-                </Form.Group>
-                {this.state.showInches ? (
-                  <Row>
-                    <Col>
-                      <Form.Group className="mb-3" controlId="formHpIn">
-                        <Form.Label>Inches</Form.Label>
-                        <Form.Control
-                          type="number"
-                          min="0"
-                          step="0.01"
-                          placeholder=""
-                          value={this.state.hp_in}
-                          onChange={(e) => this.handleOnHpInChange(e)}
-                        />
-                        <Form.Text className="text-muted">Width in Inches</Form.Text>
-                      </Form.Group>
-                    </Col>
-                    <Col>
-                      <Form.Group className="mb-3" controlId="formUIn">
-                        <Form.Label>Panel Size (in)</Form.Label>
-                        <Form.Control
-                          type="number"
-                          min="0"
-                          placeholder=""
-                          value={this.state.hp_in_avg}
-                          disabled={true}
-                        />
-                        <Form.Text className="text-muted">
-                          Average Panel Size = (HP * 0.2) - 0.01338583 (to 1 decimal place)
-                        </Form.Text>
-                      </Form.Group>
-                    </Col>
-                  </Row>
-                ) : (
-                  <Row>
-                    <Col>
-                      <Form.Group className="mb-3" controlId="formHpMm">
-                        <Form.Label>Millimeters</Form.Label>
-                        <Form.Control
-                          type="number"
-                          min="0"
-                          step="0.1"
-                          placeholder=""
-                          value={this.state.hp_mm}
-                          onChange={(e) => this.handleOnHpMmChange(e)}
-                        />
-                        <Form.Text className="text-muted">Width in Millimeters</Form.Text>
-                      </Form.Group>
-                    </Col>
-                    <Col>
-                      <Form.Group className="mb-3" controlId="formUIn">
-                        <Form.Label>Panel Size (mm)</Form.Label>
-                        <Form.Control
-                          type="number"
-                          min="0"
-                          placeholder=""
-                          value={this.state.hp_mm_avg}
-                          disabled={true}
-                        />
-                        <Form.Text className="text-muted">
-                          Average Panel Size = (HP * 5.08) - 0.34 (to 1 decimal place)
-                        </Form.Text>
-                      </Form.Group>
-                    </Col>
-                  </Row>
-                )}
-              </Form>
+          {/* <Tabs defaultActiveKey="HP" id="uncontrolled-tab-example" className="mb-3">
+            <Tab eventKey="HP" title="HP"> */}
 
-              <div id="panel">
-                {this.state.hp < 10 ? (
-                  <React.Fragment></React.Fragment>
-                ) : (
-                  <React.Fragment>
-                    <div id="panel-measure-line-2" className="panel-measure-line panel-measure-line-vert"></div>
-                    <div id="panel-hole-tr" className="panel-hole"></div>
-                    <div id="panel-hole-br" className="panel-hole"></div>
-                    <p id="hole-spacing" className="panel-text text-center">
-                      &emsp;<span className="arrow">←</span>&emsp;&emsp; {this.getHPMinus3Measurement()} &emsp;&emsp;
-                      <span className="arrow">→</span>
-                    </p>
-                  </React.Fragment>
-                )}
-                <div id="panel-border"></div>
-                <div id="panel-measure-line-0" className="panel-measure-line panel-measure-line-vert"></div>
-                <div id="panel-measure-line-1" className="panel-measure-line panel-measure-line-vert"></div>
-                <div id="panel-measure-line-3" className="panel-measure-line panel-measure-line-hor"></div>
-                <div id="panel-measure-line-4" className="panel-measure-line panel-measure-line-hor"></div>
-                <div id="panel-measure-line-5" className="panel-measure-line panel-measure-line-hor"></div>
-                <div id="panel-measure-line-6" className="panel-measure-line panel-measure-line-hor"></div>
-                <div id="panel-hole-tl" className="panel-hole"></div>
-                <div id="panel-hole-bl" className="panel-hole"></div>
-                <div id="pcb-panel"></div>
-                <p id="pcb-text-w" className="panel-text">
-                  PCB WIDTH: {this.getPcbWidth()}
-                </p>
-                <p id="pcb-text-h" className="panel-text">
-                  PCB HEIGHT: 110
-                </p>
+          <Card className="h-100 p-5 bg-light border rounded-3  mb-4">
+            <h1>Height</h1>
+            <Form>
+              <Form.Group className="mb-3" controlId="formU">
+                <Form.Label>Rack Units</Form.Label>
+                <Form.Control
+                  type="number"
+                  placeholder=""
+                  min="0"
+                  value={this.state.u}
+                  onChange={(e) => this.handleOnUChange(e)}
+                />
+                <Form.Text className="text-muted">The number of Horizontal Pitch Units</Form.Text>
+              </Form.Group>
+              {this.state.showInches ? (
+                <Row>
+                  <Col>
+                    <Form.Group className="mb-3" controlId="formUIn">
+                      <Form.Label>Inches</Form.Label>
+                      <Form.Control
+                        type="number"
+                        min="0"
+                        placeholder=""
+                        step="0.01"
+                        value={this.state.u_in}
+                        onChange={(e) => this.handleOnUInChange(e)}
+                      />
+                      <Form.Text className="text-muted">Height in Inches</Form.Text>
+                    </Form.Group>
+                  </Col>
+                  <Col>
+                    <Form.Group className="mb-3" controlId="formUIn">
+                      <Form.Label>Inches</Form.Label>
+                      <Form.Control
+                        type="number"
+                        min="0"
+                        placeholder=""
+                        step="0.01"
+                        value={this.state.u > 0 ? (this.state.u_in - 0.1909449).toFixed(2) : 0}
+                        disabled={true}
+                      />
+                      <Form.Text className="text-muted">Height in Inches</Form.Text>
+                    </Form.Group>
+                  </Col>
+                </Row>
+              ) : (
+                <Row>
+                  <Col>
+                    <Form.Group className="mb-3" controlId="formUMm">
+                      <Form.Label>Millimeters</Form.Label>
+                      <Form.Control
+                        type="number"
+                        min="0"
+                        placeholder=""
+                        step="0.1"
+                        value={this.state.u_mm}
+                        onChange={(e) => this.handleOnUMmChange(e)}
+                      />
+                      <Form.Text className="text-muted">Height in Millimeters</Form.Text>
+                    </Form.Group>
+                  </Col>
+                  <Col>
+                    <Form.Group className="mb-3" controlId="formUMm">
+                      <Form.Label>Millimeters</Form.Label>
+                      <Form.Control
+                        type="number"
+                        min="0"
+                        placeholder=""
+                        step="0.1"
+                        value={this.state.u > 0 ? (this.state.u_mm - 4.85).toFixed(2) : 0}
+                        disabled={true}
+                      />
+                      <Form.Text className="text-muted">Height in Millimeters</Form.Text>
+                    </Form.Group>
+                  </Col>
+                </Row>
+              )}
+            </Form>
+          </Card>
+          <Card className="h-100 p-5 bg-light border rounded-3  mb-4">
+            <h1>Width</h1>
+            <Form>
+              <Form.Group className="mb-3" controlId="formHp">
+                <Form.Label>Horizontal Pitch</Form.Label>
+                <Form.Control
+                  type="number"
+                  placeholder=""
+                  min="0"
+                  value={this.state.hp}
+                  onChange={(e) => this.handleOnHpChange(e)}
+                />
+                <Form.Text className="text-muted">The number of Horizontal Pitch Units</Form.Text>
+              </Form.Group>
+              {this.state.showInches ? (
+                <Row>
+                  <Col>
+                    <Form.Group className="mb-3" controlId="formHpIn">
+                      <Form.Label>Inches</Form.Label>
+                      <Form.Control
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        placeholder=""
+                        value={this.state.hp_in}
+                        onChange={(e) => this.handleOnHpInChange(e)}
+                      />
+                      <Form.Text className="text-muted">Width in Inches</Form.Text>
+                    </Form.Group>
+                  </Col>
+                  <Col>
+                    <Form.Group className="mb-3" controlId="formUIn">
+                      <Form.Label>Panel Size (in)</Form.Label>
+                      <Form.Control type="number" min="0" placeholder="" value={this.state.hp_in_avg} disabled={true} />
+                      <Form.Text className="text-muted">Average Panel Size = (HP * 0.2) - 0.0134</Form.Text>
+                    </Form.Group>
+                  </Col>
+                </Row>
+              ) : (
+                <Row>
+                  <Col>
+                    <Form.Group className="mb-3" controlId="formHpMm">
+                      <Form.Label>Millimeters</Form.Label>
+                      <Form.Control
+                        type="number"
+                        min="0"
+                        step="0.1"
+                        placeholder=""
+                        value={this.state.hp_mm}
+                        onChange={(e) => this.handleOnHpMmChange(e)}
+                      />
+                      <Form.Text className="text-muted">Width in Millimeters</Form.Text>
+                    </Form.Group>
+                  </Col>
+                  <Col>
+                    <Form.Group className="mb-3" controlId="formUIn">
+                      <Form.Label>Panel Size (mm)</Form.Label>
+                      <Form.Control type="number" min="0" placeholder="" value={this.state.hp_mm_avg} disabled={true} />
+                      <Form.Text className="text-muted">Average Panel Size = (HP * 5.08) - 0.34</Form.Text>
+                    </Form.Group>
+                  </Col>
+                </Row>
+              )}
+            </Form>
+          </Card>
+          {/* <Card className="h-100 p-5 bg-light border rounded-3 mb-4"> */}
+          <h1>Schematic</h1>
+          <div className="mt-4 mb-2" style={{ width: "270px" }}>
+            <label className="switch">
+              <input
+                id="inch-toggle"
+                type="checkbox"
+                checked={this.state.showInches}
+                onChange={(e) => this.handleOnShowInchesChanged(e)}
+              />
+              <span className="slider round"></span>
+            </label>
+            <label htmlFor="inch-toggle">&nbsp;Show Measurements in Inches</label>
+          </div>
 
-                <p id="top-measurement" className="panel-text">
-                  <span className="arrow">↓</span> {this.state.showInches ? "5.059" : "128.5"}{" "}
-                  <span className="arrow">↓</span>
-                </p>
-                <p id="top-measurement-2" className="panel-text">
-                  <span className="arrow">↑</span> {this.state.showInches ? "4.940" : "125.5"}{" "}
-                  <span className="arrow">↑</span>
-                </p>
-                <p id="top-hole-measurement" className="panel-text">
-                  {this.state.showInches ? "0.118" : "3.0"} <span className="arrow">↕</span>
-                </p>
-                <p id="bottom-hole-measurement-v" className="panel-text">
-                  {this.state.showInches ? "0.118" : "3.0"} <span className="arrow">↕</span>
-                </p>
-                <p id="bottom-hole-measurement-h" className="panel-text">
-                  {this.state.showInches ? "0.295" : "7.5"} <span className="arrow">↔</span>
-                </p>
-                <p id="hole-diameter" className="panel-text">
-                  d = {this.state.showInches ? "0.125" : "3.2"}
-                </p>
-                <p id="bottom-measurement" className="panel-text">
-                  <span className="arrow">↑</span> {this.state.showInches ? "5.059" : "128.5"}{" "}
-                  <span className="arrow">↑</span>
-                </p>
-                <p id="panel-width" className="panel-text">
-                  MODULE WIDTH: {this.state.showInches ? this.state.hp_in_avg : this.state.hp_mm_avg}{" "}
-                </p>
-              </div>
-              <br />
+          <div className="mt-4 mb-4" style={{ width: "180px" }}>
+            <label className="switch">
+              <input
+                id="whole-height-toggle"
+                type="checkbox"
+                checked={this.state.wholeHeight}
+                onChange={(e) => this.handleOnWholeHeightChanged(e)}
+              />
+              <span className="slider round"></span>
+            </label>
+            <label htmlFor="whole-height-toggle">&nbsp;Use whole height</label>
+          </div>
 
-              <br />
-              <br />
-            </Tab>
-            <Tab eventKey="Units" title="Units">
-              <div className="mt-4 mb-2" style={{ width: "270px" }}>
-                <label className="switch">
-                  <input
-                    id="inch-toggle"
-                    type="checkbox"
-                    checked={this.state.showInches}
-                    onChange={(e) => this.handleOnShowInchesChanged(e)}
-                  />
-                  <span className="slider round"></span>
-                </label>
-                <label htmlFor="inch-toggle">&nbsp;Show Measurements in Inches</label>
-              </div>
-              <Form>
-                <Form.Group className="mb-3" controlId="formU">
-                  <Form.Label>Eurorack Units</Form.Label>
-                  <Form.Control
-                    type="number"
-                    placeholder=""
-                    min="0"
-                    value={this.state.u}
-                    onChange={(e) => this.handleOnUChange(e)}
-                  />
-                  <Form.Text className="text-muted">The number of Horizontal Pitch Units</Form.Text>
-                </Form.Group>
-                {this.state.showInches ? (
-                  <Row>
-                    <Col>
-                      <Form.Group className="mb-3" controlId="formUIn">
-                        <Form.Label>Inches</Form.Label>
-                        <Form.Control
-                          type="number"
-                          min="0"
-                          placeholder=""
-                          value={this.state.u_in}
-                          onChange={(e) => this.handleOnUInChange(e)}
-                        />
-                        <Form.Text className="text-muted">Width in Inches</Form.Text>
-                      </Form.Group>
-                    </Col>
-                    <Col>
-                      <Form.Group className="mb-3" controlId="formUIn">
-                        <Form.Label>Inches</Form.Label>
-                        <Form.Control
-                          type="number"
-                          min="0"
-                          placeholder=""
-                          value={(this.state.u_in - 0.1909449).toFixed(2)}
-                          disabled={true}
-                        />
-                        <Form.Text className="text-muted">Width in Inches</Form.Text>
-                      </Form.Group>
-                    </Col>
-                  </Row>
-                ) : (
-                  <Row>
-                    <Col>
-                      <Form.Group className="mb-3" controlId="formUMm">
-                        <Form.Label>Millimeters</Form.Label>
-                        <Form.Control
-                          type="number"
-                          min="0"
-                          placeholder=""
-                          value={this.state.u_mm}
-                          onChange={(e) => this.handleOnUMmChange(e)}
-                        />
-                        <Form.Text className="text-muted">Width in Millimeters</Form.Text>
-                      </Form.Group>
-                    </Col>
-                    <Col>
-                      <Form.Group className="mb-3" controlId="formUMm">
-                        <Form.Label>Millimeters</Form.Label>
-                        <Form.Control
-                          type="number"
-                          min="0"
-                          placeholder=""
-                          value={(this.state.u_mm - 4.85).toFixed(2)}
-                          disabled={true}
-                        />
-                        <Form.Text className="text-muted">Width in Millimeters</Form.Text>
-                      </Form.Group>
-                    </Col>
-                  </Row>
-                )}
-              </Form>
-            </Tab>
-          </Tabs>
+          <div id="panel">
+            {this.state.hp < 10 ? (
+              <React.Fragment></React.Fragment>
+            ) : (
+              <React.Fragment>
+                <div id="panel-measure-line-2" className="panel-measure-line panel-measure-line-vert"></div>
+                <div id="panel-hole-tr" className="panel-hole"></div>
+                <div id="panel-hole-br" className="panel-hole"></div>
+                <p id="hole-spacing" className="panel-text text-center">
+                  &emsp;<span className="arrow">←</span>&emsp;&emsp; {this.getHPMinus3Measurement()} &emsp;&emsp;
+                  <span className="arrow">→</span>
+                </p>
+              </React.Fragment>
+            )}
+            <div id="panel-border"></div>
+            <div id="panel-measure-line-0" className="panel-measure-line panel-measure-line-vert"></div>
+            <div id="panel-measure-line-1" className="panel-measure-line panel-measure-line-vert"></div>
+            <div id="panel-measure-line-3" className="panel-measure-line panel-measure-line-hor"></div>
+            <div id="panel-measure-line-4" className="panel-measure-line panel-measure-line-hor"></div>
+            <div id="panel-measure-line-5" className="panel-measure-line panel-measure-line-hor"></div>
+            <div id="panel-measure-line-6" className="panel-measure-line panel-measure-line-hor"></div>
+            <div id="panel-hole-tl" className="panel-hole"></div>
+            <div id="panel-hole-bl" className="panel-hole"></div>
+            <div id="pcb-panel"></div>
+            <p id="pcb-text-w" className="panel-text">
+              PCB WIDTH: {this.getPcbWidth()}
+            </p>
+            <p id="pcb-text-h" className="panel-text">
+              PCB HEIGHT: {this.getPcbHeight()}
+            </p>
+
+            <p id="top-measurement" className="panel-text">
+              <span className="arrow">↓</span> {this.getPanelHeight()} <span className="arrow">↓</span>
+            </p>
+            <p id="top-measurement-2" className="panel-text">
+              <span className="arrow">↑</span> {this.getPanelHeight(3)} <span className="arrow">↑</span>
+            </p>
+            <p id="top-hole-measurement" className="panel-text">
+              {this.state.showInches ? "0.118" : "3.0"} <span className="arrow">↕</span>
+            </p>
+            <p id="bottom-hole-measurement-v" className="panel-text">
+              {this.state.showInches ? "0.118" : "3.0"} <span className="arrow">↕</span>
+            </p>
+            <p id="bottom-hole-measurement-h" className="panel-text">
+              {this.state.showInches ? "0.295" : "7.5"} <span className="arrow">↔</span>
+            </p>
+            <p id="hole-diameter" className="panel-text">
+              d = {this.state.showInches ? "0.125" : "3.2"}
+            </p>
+            <p id="bottom-measurement" className="panel-text">
+              <span className="arrow">↑</span> 0 <span className="arrow">↑</span>
+            </p>
+            <p id="panel-width" className="panel-text">
+              MODULE WIDTH: {this.state.showInches ? this.state.hp_in_avg : this.state.hp_mm_avg}{" "}
+            </p>
+          </div>
+          <br />
+          <br />
+
+          {/* </Card> */}
+
+          {/* </Tab>
+            <Tab eventKey="Units" title="Units"> */}
+
+          {/* </Tab>
+          </Tabs> */}
         </Container>
       </React.Fragment>
     );
