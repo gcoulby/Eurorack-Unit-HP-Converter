@@ -98,7 +98,7 @@ class Convertor extends Component {
         <div className="bg-dark text-light p-3 mb-4">
           <div className="row">
             <div className="col-8">
-              <h1>Eurorack Unit/HP Convertor</h1>
+              <h1>Eurorack Unit/HP Converter</h1>
             </div>
             <div className="col-4">
               <div className="social">
