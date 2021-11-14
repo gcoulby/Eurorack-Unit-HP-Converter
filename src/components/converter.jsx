@@ -5,7 +5,7 @@ const HP_W = 5.08;
 const U_H = 44.45;
 const HP_OFFSET = 0.34;
 
-class Convertor extends Component {
+class Converter extends Component {
   state = {
     hp: 0,
     hp_mm: 0,
@@ -429,4 +429,4 @@ class Convertor extends Component {
   }
 }
 
-export default Convertor;
+export default Converter;

@@ -1,6 +1,6 @@
 {
-  "name": "eurorack-convertor",
-  "homepage": "http://gcoulby.github.io/Eurorack-Unit-HP-Convertor",
+  "name": "eurorack-converter",
+  "homepage": "http://gcoulby.github.io/Eurorack-Unit-HP-Converter",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
