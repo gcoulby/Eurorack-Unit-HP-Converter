@@ -1,8 +1,8 @@
 {
   "files": {
-    "main.css": "/Eurorack-Unit-HP-Convertor/static/css/main.200ba488.chunk.css",
-    "main.js": "/Eurorack-Unit-HP-Convertor/static/js/main.b793d3a0.chunk.js",
-    "main.js.map": "/Eurorack-Unit-HP-Convertor/static/js/main.b793d3a0.chunk.js.map",
+    "main.css": "/Eurorack-Unit-HP-Convertor/static/css/main.34fc47c5.chunk.css",
+    "main.js": "/Eurorack-Unit-HP-Convertor/static/js/main.5044f3c6.chunk.js",
+    "main.js.map": "/Eurorack-Unit-HP-Convertor/static/js/main.5044f3c6.chunk.js.map",
     "runtime-main.js": "/Eurorack-Unit-HP-Convertor/static/js/runtime-main.64f820d4.js",
     "runtime-main.js.map": "/Eurorack-Unit-HP-Convertor/static/js/runtime-main.64f820d4.js.map",
     "static/css/2.4be38407.chunk.css": "/Eurorack-Unit-HP-Convertor/static/css/2.4be38407.chunk.css",
@@ -12,14 +12,14 @@
     "static/js/3.4571f4c6.chunk.js.map": "/Eurorack-Unit-HP-Convertor/static/js/3.4571f4c6.chunk.js.map",
     "index.html": "/Eurorack-Unit-HP-Convertor/index.html",
     "static/css/2.4be38407.chunk.css.map": "/Eurorack-Unit-HP-Convertor/static/css/2.4be38407.chunk.css.map",
-    "static/css/main.200ba488.chunk.css.map": "/Eurorack-Unit-HP-Convertor/static/css/main.200ba488.chunk.css.map",
+    "static/css/main.34fc47c5.chunk.css.map": "/Eurorack-Unit-HP-Convertor/static/css/main.34fc47c5.chunk.css.map",
     "static/js/2.cc0baa02.chunk.js.LICENSE.txt": "/Eurorack-Unit-HP-Convertor/static/js/2.cc0baa02.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.64f820d4.js",
     "static/css/2.4be38407.chunk.css",
     "static/js/2.cc0baa02.chunk.js",
-    "static/css/main.200ba488.chunk.css",
-    "static/js/main.b793d3a0.chunk.js"
+    "static/css/main.34fc47c5.chunk.css",
+    "static/js/main.5044f3c6.chunk.js"
   ]
 }
