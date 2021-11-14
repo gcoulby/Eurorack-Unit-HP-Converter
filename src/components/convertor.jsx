@@ -36,6 +36,14 @@ class Convertor extends Component {
     return this.state.showInches ? Number((mm / 25.4).toFixed(2)) : mm;
   };
 
+  getPcbWidth = () => {
+    if (this.state.hp === 0) return 0;
+    else {
+      var val = this.state.showInches ? (this.state.hp_mm_avg - 0.1) / 24.5 : this.state.hp_mm_avg - 0.1;
+      return val.toFixed(2);
+    }
+  };
+
   handleOnShowInchesChanged = () => {
     this.setState({ showInches: !this.state.showInches });
   };
@@ -154,24 +162,36 @@ class Convertor extends Component {
         </div>
         <Container>
           <Alert variant="secondary">
-            The mechanical specifications are derived from the Eurorack{" "}
-            <a href="http://www.doepfer.de/a100_man/a100m_e.htm" target="_blank" rel="noopener noreferrer">
-              mechanical specifications set by Doepfer.
-            </a>
+            <p>
+              The mechanical specifications are derived from the Eurorack{" "}
+              <a href="http://www.doepfer.de/a100_man/a100m_e.htm" target="_blank" rel="noopener noreferrer">
+                mechanical specifications set by Doepfer.
+              </a>
+            </p>
+            <p>
+              The PCB specifications are derived from{" "}
+              <a
+                href="https://intellijel.com/support/1u-technical-specifications/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Intellijel's 1U Technical Specifications.
+              </a>
+            </p>
           </Alert>
           <Tabs defaultActiveKey="HP" id="uncontrolled-tab-example" className="mb-3">
             <Tab eventKey="HP" title="HP">
               <div className="mt-4 mb-2" style={{ width: "270px" }}>
-                <label class="switch">
+                <label className="switch">
                   <input
                     id="inch-toggle"
                     type="checkbox"
                     checked={this.state.showInches}
                     onChange={(e) => this.handleOnShowInchesChanged(e)}
                   />
-                  <span class="slider round"></span>
+                  <span className="slider round"></span>
                 </label>
-                <label for="inch-toggle">&nbsp;Show Measurements in Inches</label>
+                <label htmlFor="inch-toggle">&nbsp;Show Measurements in Inches</label>
               </div>
               <Form>
                 <Form.Group className="mb-3" controlId="formHp">
@@ -275,6 +295,13 @@ class Convertor extends Component {
                 <div id="panel-measure-line-6" className="panel-measure-line panel-measure-line-hor"></div>
                 <div id="panel-hole-tl" className="panel-hole"></div>
                 <div id="panel-hole-bl" className="panel-hole"></div>
+                <div id="pcb-panel"></div>
+                <p id="pcb-text-w" className="panel-text">
+                  PCB WIDTH: {this.getPcbWidth()}
+                </p>
+                <p id="pcb-text-h" className="panel-text">
+                  PCB HEIGHT: 110
+                </p>
 
                 <p id="top-measurement" className="panel-text">
                   <span className="arrow">↓</span> {this.state.showInches ? "5.059" : "128.5"}{" "}
@@ -311,16 +338,16 @@ class Convertor extends Component {
             </Tab>
             <Tab eventKey="Units" title="Units">
               <div className="mt-4 mb-2" style={{ width: "270px" }}>
-                <label class="switch">
+                <label className="switch">
                   <input
                     id="inch-toggle"
                     type="checkbox"
                     checked={this.state.showInches}
                     onChange={(e) => this.handleOnShowInchesChanged(e)}
                   />
-                  <span class="slider round"></span>
+                  <span className="slider round"></span>
                 </label>
-                <label for="inch-toggle">&nbsp;Show Measurements in Inches</label>
+                <label htmlFor="inch-toggle">&nbsp;Show Measurements in Inches</label>
               </div>
               <Form>
                 <Form.Group className="mb-3" controlId="formU">

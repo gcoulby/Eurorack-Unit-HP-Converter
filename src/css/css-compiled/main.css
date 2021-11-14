@@ -61,6 +61,10 @@
   height: 550px;
 }
 
+p {
+  margin-bottom: 0 !important;
+}
+
 #panel-border {
   position: absolute;
   top: 20px;
@@ -69,6 +73,27 @@
   height: 514px;
   /* display: block; */
   border: 1px solid black;
+}
+
+#pcb-panel {
+  position: absolute;
+  top: 65px;
+  left: 105px;
+  width: 240px;
+  height: 425px;
+  border: 1px solid black;
+  background: green;
+  opacity: 0.3;
+}
+
+#pcb-text-w {
+  top: 250px;
+  left: 180px;
+}
+
+#pcb-text-h {
+  top: 270px;
+  left: 180px;
 }
 
 .panel-measure-line {
