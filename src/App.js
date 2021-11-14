@@ -1,7 +1,6 @@
-import logo from './logo.svg';
-import './App.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import Convertor from './components/convertor';
+import "./css/css-compiled/main.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import Convertor from "./components/convertor";
 
 function App() {
   return (

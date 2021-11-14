@@ -1,41 +1,63 @@
 import React, { Component } from "react";
-import { Button, Form, FormControl, Tabs, Tab, Container } from "react-bootstrap";
+import { Form, Tabs, Tab, Container, Row, Col, Alert } from "react-bootstrap";
 
 const HP_W = 5.08;
 const U_H = 44.45;
+const HP_OFFSET = 0.34;
 
 class Convertor extends Component {
   state = {
     hp: 0,
     hp_mm: 0,
     hp_in: 0,
+    hp_mm_avg: 0,
+    hp_in_avg: 0,
     u: 3,
     u_mm: 133.35,
     u_in: 5.25,
+    showInches: false,
+  };
+
+  setHpMeasurements = (hp, mm) => {
+    const hp_mm = mm;
+    const hp_in = (mm / 25.4).toFixed(2);
+    var newHp = Number((hp * HP_W - HP_OFFSET).toFixed(1));
+    const hp_mm_avg = newHp;
+    const hp_in_avg = (newHp / 25.4).toFixed(2);
+    this.setState({ hp });
+    this.setState({ hp_mm });
+    this.setState({ hp_in });
+    this.setState({ hp_mm_avg });
+    this.setState({ hp_in_avg });
+  };
+
+  getHPMinus3Measurement = () => {
+    const mm = Number(((this.state.hp - 3) * HP_W).toFixed(2));
+    return this.state.showInches ? Number((mm / 25.4).toFixed(2)) : mm;
+  };
+
+  handleOnShowInchesChanged = () => {
+    this.setState({ showInches: !this.state.showInches });
   };
 
   handleOnHpChange = (evt) => {
-    this.setState({ hp: evt.target.value });
-    const hp_mm = (evt.target.value * HP_W).toFixed(2);
-    const hp_in = ((evt.target.value * HP_W) / 25.4).toFixed(2);
-    this.setState({ hp_mm });
-    this.setState({ hp_in });
+    const hp = evt.target.value;
+    const mm = (evt.target.value * HP_W).toFixed(2);
+    this.setHpMeasurements(hp, mm);
   };
 
   handleOnHpMmChange = (evt) => {
-    this.setState({ hp_mm: evt.target.value });
-    const hp = Math.ceil(evt.target.value / HP_W);
-    const hp_in = (evt.target.value / 25.4).toFixed(2);
-    this.setState({ hp });
-    this.setState({ hp_in });
+    const mm = Number(evt.target.value);
+    const hp = Math.ceil((mm + HP_OFFSET) / HP_W);
+    this.setHpMeasurements(hp, mm);
   };
 
   handleOnHpInChange = (evt) => {
-    this.setState({ hp_in: evt.target.value });
-    const hp = Math.ceil((evt.target.value * 25.4) / HP_W);
-    const hp_mm = (evt.target.value * 25.4).toFixed(2);
-    this.setState({ hp });
-    this.setState({ hp_mm });
+    const inch = evt.target.value;
+    const mm = Number((inch * 25.4).toFixed(2));
+    const hp = Math.ceil((mm + HP_OFFSET) / HP_W);
+    console.log(inch, hp, mm);
+    this.setHpMeasurements(hp, mm);
   };
 
   handleOnUChange = (evt) => {
@@ -67,22 +89,22 @@ class Convertor extends Component {
       <React.Fragment>
         <div className="bg-dark text-light p-3 mb-4">
           <div className="row">
-            <div className="col-10">
+            <div className="col-8">
               <h1>Eurorack Unit/HP Convertor</h1>
             </div>
-            <div className="col-2">
-              <div class="social">
+            <div className="col-4">
+              <div className="social">
                 <ul>
                   <li>
                     <a
                       title="GitHub"
-                      class="social-icon"
+                      className="social-icon"
                       href="https://github.com/gcoulby"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
                       <svg
-                        class="svg-inline--fa fa-github fa-w-16"
+                        className="svg-inline--fa fa-github fa-w-16"
                         aria-hidden="true"
                         focusable="false"
                         data-prefix="fab"
@@ -102,7 +124,7 @@ class Convertor extends Component {
                   <li>
                     <a
                       title="Website"
-                      class="social-icon"
+                      className="social-icon"
                       href="https://grahamcoulby.co.uk/"
                       target="_blank"
                       rel="noopener noreferrer"
@@ -115,12 +137,12 @@ class Convertor extends Component {
                         role="img"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 496 512"
-                        class="svg-inline--fa fa-globe fa-w-16 fa-3x"
+                        className="svg-inline--fa fa-globe fa-w-16 fa-3x"
                       >
                         <path
                           fill="currentColor"
                           d="M336.5 160C322 70.7 287.8 8 248 8s-74 62.7-88.5 152h177zM152 256c0 22.2 1.2 43.5 3.3 64h185.3c2.1-20.5 3.3-41.8 3.3-64s-1.2-43.5-3.3-64H155.3c-2.1 20.5-3.3 41.8-3.3 64zm324.7-96c-28.6-67.9-86.5-120.4-158-141.6 24.4 33.8 41.2 84.7 50 141.6h108zM177.2 18.4C105.8 39.6 47.8 92.1 19.3 160h108c8.7-56.9 25.5-107.8 49.9-141.6zM487.4 192H372.7c2.1 21 3.3 42.5 3.3 64s-1.2 43-3.3 64h114.6c5.5-20.5 8.6-41.8 8.6-64s-3.1-43.5-8.5-64zM120 256c0-21.5 1.2-43 3.3-64H8.6C3.2 212.5 0 233.8 0 256s3.2 43.5 8.6 64h114.6c-2-21-3.2-42.5-3.2-64zm39.5 96c14.5 89.3 48.7 152 88.5 152s74-62.7 88.5-152h-177zm159.3 141.6c71.4-21.2 129.4-73.7 158-141.6h-108c-8.8 56.9-25.6 107.8-50 141.6zM19.3 352c28.6 67.9 86.5 120.4 158 141.6-24.4-33.8-41.2-84.7-50-141.6h-108z"
-                          class=""
+                          className=""
                         ></path>
                       </svg>
                     </a>
@@ -131,8 +153,26 @@ class Convertor extends Component {
           </div>
         </div>
         <Container>
+          <Alert variant="secondary">
+            The mechanical specifications are derived from the Eurorack{" "}
+            <a href="http://www.doepfer.de/a100_man/a100m_e.htm" target="_blank" rel="noopener noreferrer">
+              mechanical specifications set by Doepfer.
+            </a>
+          </Alert>
           <Tabs defaultActiveKey="HP" id="uncontrolled-tab-example" className="mb-3">
             <Tab eventKey="HP" title="HP">
+              <div className="mt-4 mb-2" style={{ width: "270px" }}>
+                <label class="switch">
+                  <input
+                    id="inch-toggle"
+                    type="checkbox"
+                    checked={this.state.showInches}
+                    onChange={(e) => this.handleOnShowInchesChanged(e)}
+                  />
+                  <span class="slider round"></span>
+                </label>
+                <label for="inch-toggle">&nbsp;Show Measurements in Inches</label>
+              </div>
               <Form>
                 <Form.Group className="mb-3" controlId="formHp">
                   <Form.Label>Horizontal Pitch</Form.Label>
@@ -145,33 +185,143 @@ class Convertor extends Component {
                   />
                   <Form.Text className="text-muted">The number of Horizontal Pitch Units</Form.Text>
                 </Form.Group>
-
-                <Form.Group className="mb-3" controlId="formHpMm">
-                  <Form.Label>Millimeters</Form.Label>
-                  <Form.Control
-                    type="number"
-                    min="0"
-                    placeholder=""
-                    value={this.state.hp_mm}
-                    onChange={(e) => this.handleOnHpMmChange(e)}
-                  />
-                  <Form.Text className="text-muted">Width in Millimeters</Form.Text>
-                </Form.Group>
-
-                <Form.Group className="mb-3" controlId="formHpIn">
-                  <Form.Label>Inches</Form.Label>
-                  <Form.Control
-                    type="number"
-                    min="0"
-                    placeholder=""
-                    value={this.state.hp_in}
-                    onChange={(e) => this.handleOnHpInChange(e)}
-                  />
-                  <Form.Text className="text-muted">Width in Inches</Form.Text>
-                </Form.Group>
+                {this.state.showInches ? (
+                  <Row>
+                    <Col>
+                      <Form.Group className="mb-3" controlId="formHpIn">
+                        <Form.Label>Inches</Form.Label>
+                        <Form.Control
+                          type="number"
+                          min="0"
+                          step="0.01"
+                          placeholder=""
+                          value={this.state.hp_in}
+                          onChange={(e) => this.handleOnHpInChange(e)}
+                        />
+                        <Form.Text className="text-muted">Width in Inches</Form.Text>
+                      </Form.Group>
+                    </Col>
+                    <Col>
+                      <Form.Group className="mb-3" controlId="formUIn">
+                        <Form.Label>Panel Size (in)</Form.Label>
+                        <Form.Control
+                          type="number"
+                          min="0"
+                          placeholder=""
+                          value={this.state.hp_in_avg}
+                          disabled={true}
+                        />
+                        <Form.Text className="text-muted">
+                          Average Panel Size = (HP * 0.2) - 0.01338583 (to 1 decimal place)
+                        </Form.Text>
+                      </Form.Group>
+                    </Col>
+                  </Row>
+                ) : (
+                  <Row>
+                    <Col>
+                      <Form.Group className="mb-3" controlId="formHpMm">
+                        <Form.Label>Millimeters</Form.Label>
+                        <Form.Control
+                          type="number"
+                          min="0"
+                          step="0.1"
+                          placeholder=""
+                          value={this.state.hp_mm}
+                          onChange={(e) => this.handleOnHpMmChange(e)}
+                        />
+                        <Form.Text className="text-muted">Width in Millimeters</Form.Text>
+                      </Form.Group>
+                    </Col>
+                    <Col>
+                      <Form.Group className="mb-3" controlId="formUIn">
+                        <Form.Label>Panel Size (mm)</Form.Label>
+                        <Form.Control
+                          type="number"
+                          min="0"
+                          placeholder=""
+                          value={this.state.hp_mm_avg}
+                          disabled={true}
+                        />
+                        <Form.Text className="text-muted">
+                          Average Panel Size = (HP * 5.08) - 0.34 (to 1 decimal place)
+                        </Form.Text>
+                      </Form.Group>
+                    </Col>
+                  </Row>
+                )}
               </Form>
+
+              <div id="panel">
+                {this.state.hp < 10 ? (
+                  <React.Fragment></React.Fragment>
+                ) : (
+                  <React.Fragment>
+                    <div id="panel-measure-line-2" className="panel-measure-line panel-measure-line-vert"></div>
+                    <div id="panel-hole-tr" className="panel-hole"></div>
+                    <div id="panel-hole-br" className="panel-hole"></div>
+                    <p id="hole-spacing" className="panel-text text-center">
+                      &emsp;<span className="arrow">←</span>&emsp;&emsp; {this.getHPMinus3Measurement()} &emsp;&emsp;
+                      <span className="arrow">→</span>
+                    </p>
+                  </React.Fragment>
+                )}
+                <div id="panel-border"></div>
+                <div id="panel-measure-line-0" className="panel-measure-line panel-measure-line-vert"></div>
+                <div id="panel-measure-line-1" className="panel-measure-line panel-measure-line-vert"></div>
+                <div id="panel-measure-line-3" className="panel-measure-line panel-measure-line-hor"></div>
+                <div id="panel-measure-line-4" className="panel-measure-line panel-measure-line-hor"></div>
+                <div id="panel-measure-line-5" className="panel-measure-line panel-measure-line-hor"></div>
+                <div id="panel-measure-line-6" className="panel-measure-line panel-measure-line-hor"></div>
+                <div id="panel-hole-tl" className="panel-hole"></div>
+                <div id="panel-hole-bl" className="panel-hole"></div>
+
+                <p id="top-measurement" className="panel-text">
+                  <span className="arrow">↓</span> {this.state.showInches ? "5.059" : "128.5"}{" "}
+                  <span className="arrow">↓</span>
+                </p>
+                <p id="top-measurement-2" className="panel-text">
+                  <span className="arrow">↑</span> {this.state.showInches ? "4.940" : "125.5"}{" "}
+                  <span className="arrow">↑</span>
+                </p>
+                <p id="top-hole-measurement" className="panel-text">
+                  {this.state.showInches ? "0.118" : "3.0"} <span className="arrow">↕</span>
+                </p>
+                <p id="bottom-hole-measurement-v" className="panel-text">
+                  {this.state.showInches ? "0.118" : "3.0"} <span className="arrow">↕</span>
+                </p>
+                <p id="bottom-hole-measurement-h" className="panel-text">
+                  {this.state.showInches ? "0.295" : "7.5"} <span className="arrow">↔</span>
+                </p>
+                <p id="hole-diameter" className="panel-text">
+                  d = {this.state.showInches ? "0.125" : "3.2"}
+                </p>
+                <p id="bottom-measurement" className="panel-text">
+                  <span className="arrow">↑</span> {this.state.showInches ? "5.059" : "128.5"}{" "}
+                  <span className="arrow">↑</span>
+                </p>
+                <p id="panel-width" className="panel-text">
+                  MODULE WIDTH: {this.state.showInches ? this.state.hp_in_avg : this.state.hp_mm_avg}{" "}
+                </p>
+              </div>
+              <br />
+
+              <br />
+              <br />
             </Tab>
             <Tab eventKey="Units" title="Units">
+              <div className="mt-4 mb-2" style={{ width: "270px" }}>
+                <label class="switch">
+                  <input
+                    id="inch-toggle"
+                    type="checkbox"
+                    checked={this.state.showInches}
+                    onChange={(e) => this.handleOnShowInchesChanged(e)}
+                  />
+                  <span class="slider round"></span>
+                </label>
+                <label for="inch-toggle">&nbsp;Show Measurements in Inches</label>
+              </div>
               <Form>
                 <Form.Group className="mb-3" controlId="formU">
                   <Form.Label>Eurorack Units</Form.Label>
@@ -184,30 +334,65 @@ class Convertor extends Component {
                   />
                   <Form.Text className="text-muted">The number of Horizontal Pitch Units</Form.Text>
                 </Form.Group>
-
-                <Form.Group className="mb-3" controlId="formUMm">
-                  <Form.Label>Millimeters</Form.Label>
-                  <Form.Control
-                    type="number"
-                    min="0"
-                    placeholder=""
-                    value={this.state.u_mm}
-                    onChange={(e) => this.handleOnUMmChange(e)}
-                  />
-                  <Form.Text className="text-muted">Width in Millimeters</Form.Text>
-                </Form.Group>
-
-                <Form.Group className="mb-3" controlId="formUIn">
-                  <Form.Label>Inches</Form.Label>
-                  <Form.Control
-                    type="number"
-                    min="0"
-                    placeholder=""
-                    value={this.state.u_in}
-                    onChange={(e) => this.handleOnUInChange(e)}
-                  />
-                  <Form.Text className="text-muted">Width in Inches</Form.Text>
-                </Form.Group>
+                {this.state.showInches ? (
+                  <Row>
+                    <Col>
+                      <Form.Group className="mb-3" controlId="formUIn">
+                        <Form.Label>Inches</Form.Label>
+                        <Form.Control
+                          type="number"
+                          min="0"
+                          placeholder=""
+                          value={this.state.u_in}
+                          onChange={(e) => this.handleOnUInChange(e)}
+                        />
+                        <Form.Text className="text-muted">Width in Inches</Form.Text>
+                      </Form.Group>
+                    </Col>
+                    <Col>
+                      <Form.Group className="mb-3" controlId="formUIn">
+                        <Form.Label>Inches</Form.Label>
+                        <Form.Control
+                          type="number"
+                          min="0"
+                          placeholder=""
+                          value={(this.state.u_in - 0.1909449).toFixed(2)}
+                          disabled={true}
+                        />
+                        <Form.Text className="text-muted">Width in Inches</Form.Text>
+                      </Form.Group>
+                    </Col>
+                  </Row>
+                ) : (
+                  <Row>
+                    <Col>
+                      <Form.Group className="mb-3" controlId="formUMm">
+                        <Form.Label>Millimeters</Form.Label>
+                        <Form.Control
+                          type="number"
+                          min="0"
+                          placeholder=""
+                          value={this.state.u_mm}
+                          onChange={(e) => this.handleOnUMmChange(e)}
+                        />
+                        <Form.Text className="text-muted">Width in Millimeters</Form.Text>
+                      </Form.Group>
+                    </Col>
+                    <Col>
+                      <Form.Group className="mb-3" controlId="formUMm">
+                        <Form.Label>Millimeters</Form.Label>
+                        <Form.Control
+                          type="number"
+                          min="0"
+                          placeholder=""
+                          value={(this.state.u_mm - 4.85).toFixed(2)}
+                          disabled={true}
+                        />
+                        <Form.Text className="text-muted">Width in Millimeters</Form.Text>
+                      </Form.Group>
+                    </Col>
+                  </Row>
+                )}
               </Form>
             </Tab>
           </Tabs>
