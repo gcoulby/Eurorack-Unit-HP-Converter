@@ -1,26 +1,25 @@
 {
   "files": {
-    "main.css": "/Eurorack-Unit-HP-Convertor/static/css/main.997d24a4.chunk.css",
-    "main.js": "/Eurorack-Unit-HP-Convertor/static/js/main.e03c5071.chunk.js",
-    "main.js.map": "/Eurorack-Unit-HP-Convertor/static/js/main.e03c5071.chunk.js.map",
-    "runtime-main.js": "/Eurorack-Unit-HP-Convertor/static/js/runtime-main.80ace403.js",
-    "runtime-main.js.map": "/Eurorack-Unit-HP-Convertor/static/js/runtime-main.80ace403.js.map",
+    "main.css": "/Eurorack-Unit-HP-Convertor/static/css/main.200ba488.chunk.css",
+    "main.js": "/Eurorack-Unit-HP-Convertor/static/js/main.e7c5f922.chunk.js",
+    "main.js.map": "/Eurorack-Unit-HP-Convertor/static/js/main.e7c5f922.chunk.js.map",
+    "runtime-main.js": "/Eurorack-Unit-HP-Convertor/static/js/runtime-main.64f820d4.js",
+    "runtime-main.js.map": "/Eurorack-Unit-HP-Convertor/static/js/runtime-main.64f820d4.js.map",
     "static/css/2.4be38407.chunk.css": "/Eurorack-Unit-HP-Convertor/static/css/2.4be38407.chunk.css",
-    "static/js/2.e872793d.chunk.js": "/Eurorack-Unit-HP-Convertor/static/js/2.e872793d.chunk.js",
-    "static/js/2.e872793d.chunk.js.map": "/Eurorack-Unit-HP-Convertor/static/js/2.e872793d.chunk.js.map",
-    "static/js/3.d9353d54.chunk.js": "/Eurorack-Unit-HP-Convertor/static/js/3.d9353d54.chunk.js",
-    "static/js/3.d9353d54.chunk.js.map": "/Eurorack-Unit-HP-Convertor/static/js/3.d9353d54.chunk.js.map",
+    "static/js/2.cc0baa02.chunk.js": "/Eurorack-Unit-HP-Convertor/static/js/2.cc0baa02.chunk.js",
+    "static/js/2.cc0baa02.chunk.js.map": "/Eurorack-Unit-HP-Convertor/static/js/2.cc0baa02.chunk.js.map",
+    "static/js/3.4571f4c6.chunk.js": "/Eurorack-Unit-HP-Convertor/static/js/3.4571f4c6.chunk.js",
+    "static/js/3.4571f4c6.chunk.js.map": "/Eurorack-Unit-HP-Convertor/static/js/3.4571f4c6.chunk.js.map",
     "index.html": "/Eurorack-Unit-HP-Convertor/index.html",
     "static/css/2.4be38407.chunk.css.map": "/Eurorack-Unit-HP-Convertor/static/css/2.4be38407.chunk.css.map",
-    "static/css/main.997d24a4.chunk.css.map": "/Eurorack-Unit-HP-Convertor/static/css/main.997d24a4.chunk.css.map",
-    "static/js/2.e872793d.chunk.js.LICENSE.txt": "/Eurorack-Unit-HP-Convertor/static/js/2.e872793d.chunk.js.LICENSE.txt",
-    "static/media/logo.6ce24c58.svg": "/Eurorack-Unit-HP-Convertor/static/media/logo.6ce24c58.svg"
+    "static/css/main.200ba488.chunk.css.map": "/Eurorack-Unit-HP-Convertor/static/css/main.200ba488.chunk.css.map",
+    "static/js/2.cc0baa02.chunk.js.LICENSE.txt": "/Eurorack-Unit-HP-Convertor/static/js/2.cc0baa02.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.80ace403.js",
+    "static/js/runtime-main.64f820d4.js",
     "static/css/2.4be38407.chunk.css",
-    "static/js/2.e872793d.chunk.js",
-    "static/css/main.997d24a4.chunk.css",
-    "static/js/main.e03c5071.chunk.js"
+    "static/js/2.cc0baa02.chunk.js",
+    "static/css/main.200ba488.chunk.css",
+    "static/js/main.e7c5f922.chunk.js"
   ]
 }
